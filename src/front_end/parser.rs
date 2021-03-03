@@ -206,5 +206,3 @@ pub fn print_tree<W: Write>(
 
     Ok(())
 }
-
-

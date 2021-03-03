@@ -1,5 +1,6 @@
 use crate::front_end::parser::{InstructionNode, NodeType};
 use std::io::{Read, Write, ErrorKind};
+use std::fmt::{Display, Formatter};
 
 
 pub trait ByteSource {
@@ -55,11 +56,15 @@ pub fn interpret<R, W>(node: &InstructionNode, out: &mut W, src: &mut R) -> Inte
 #[derive(Copy, Clone, Debug)]
 pub enum InterpretationError {
     PointerUnderflow,
-    PointerOutOfBoundsOnIncrement,
-    PointerOutOfBoundsOnDecrement,
-    PointerOutOfBoundsOnOutput,
-    PointerOutOfBoundsOnInput,
-    PointerOutOfBoundsOnSetCell,
+}
+impl Display for InterpretationError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::PointerUnderflow => write!(f, "Cell pointer underflow on pointer decrement")?,
+        }
+        
+        Ok(())
+    }
 }
 pub type InterpretationResult = Result<(), InterpretationError>;
 

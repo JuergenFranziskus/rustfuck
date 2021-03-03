@@ -10,7 +10,7 @@ use inkwell::memory_buffer::MemoryBuffer;
 use inkwell::basic_block::BasicBlock;
 
 
-pub fn compile_to_ir(node: &InstructionNode, module_name: &str) -> String {
+pub fn compile_to_ir(node: &InstructionNode, module_name: &str) -> MemoryBuffer {
     let context = Context::create();
     let ctx = CompilationContext::new(module_name, &context);
     let symbols = Symbols::new(&ctx);
@@ -24,7 +24,7 @@ pub fn compile_to_ir(node: &InstructionNode, module_name: &str) -> String {
     free_variables(&ctx, &symbols, &vars);
     exit_program(&ctx, &symbols);
 
-    ctx.module.print_to_string().to_string()
+    ctx.module.write_bitcode_to_memory()
 }
 
 fn build_entry_block<'ctx>(ctx: &CompilationContext<'ctx>, symbols: &Symbols) -> BasicBlock<'ctx>{
