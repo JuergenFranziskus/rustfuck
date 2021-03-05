@@ -186,7 +186,7 @@ fn invoke_ld(obj_path: &Path, flush_path: &Path, out_path: &Path) -> Result<(), 
 /// hastily thrown together in an afternoon.
 /// No quality guaranteed!
 #[derive(Clap, Debug)]
-#[clap(version = "1.0", author = "Meryll")]
+#[clap(version = "1.1", author = "Meryll")]
 struct Opts {
     /// The path of the brainfuck file to compile/interpret.
     input_path: String,

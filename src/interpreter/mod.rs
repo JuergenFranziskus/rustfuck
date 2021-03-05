@@ -118,13 +118,13 @@ impl Context {
                 self.expand_memory();
 
                 let cell = &mut self.memory[self.p];
-                *cell = cell.wrapping_add((*amount % 255) as u8);
+                *cell = cell.wrapping_add((*amount % 256) as u8);
             }
             NodeType::Decrement(amount) => {
                 self.expand_memory();
 
                 let cell = &mut self.memory[self.p];
-                *cell = cell.wrapping_sub((*amount % 255) as u8);
+                *cell = cell.wrapping_sub((*amount % 256) as u8);
             }
             NodeType::Output => {
                 self.expand_memory();
@@ -143,7 +143,7 @@ impl Context {
             NodeType::SetCell(val) => {
                 self.expand_memory();
 
-                self.memory[self.p] = (*val % 255) as u8;
+                self.memory[self.p] = (*val % 256) as u8;
             }
         }
 

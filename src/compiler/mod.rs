@@ -121,12 +121,12 @@ fn build_previous(ctx: &CompilationContext, symbols: &Symbols, vars: &Variables,
     ctx.builder.build_call(symbols.previous(), &[vars.array.into(), vars.len.into(), vars.index.into(), amount_val.into()], "");
 }
 fn build_increment(ctx: &CompilationContext, symbols: &Symbols, vars: &Variables, amount: usize) {
-    let amount_val = ctx.context.i8_type().const_int(amount as u64 % 255, false);
+    let amount_val = ctx.context.i8_type().const_int(amount as u64 % 256, false);
     let args: [BasicValueEnum; 4] = [vars.array.into(), vars.len.into(), vars.index.into(), amount_val.into()];
     ctx.builder.build_call(symbols.increment(), &args, "");
 }
 fn build_decrement(ctx: &CompilationContext, symbols: &Symbols, vars: &Variables, amount: usize) {
-    let amount_val = ctx.context.i8_type().const_int(amount as u64 % 255, false);
+    let amount_val = ctx.context.i8_type().const_int(amount as u64 % 256, false);
     let args: [BasicValueEnum; 4] = [vars.array.into(), vars.len.into(), vars.index.into(), amount_val.into()];
     ctx.builder.build_call(symbols.decrement(), &args, "");
 }
@@ -139,7 +139,7 @@ fn build_input(ctx: &CompilationContext, symbols: &Symbols, vars: &Variables) {
     ctx.builder.build_call(symbols.input(), &args, "");
 }
 fn build_set(ctx: &CompilationContext, symbols: &Symbols, vars: &Variables, value: usize) {
-    let value_val = ctx.context.i8_type().const_int(value as u64 % 255, false);
+    let value_val = ctx.context.i8_type().const_int(value as u64 % 256, false);
     let args: [BasicValueEnum; 4] = [vars.array.into(), vars.len.into(), vars.index.into(), value_val.into()];
     ctx.builder.build_call(symbols.set(), &args, "");
 }
