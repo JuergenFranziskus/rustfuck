@@ -41,7 +41,7 @@ fn main() {
 
 
     if opts.interpret {
-        let result = interpret(&node, &mut StdOutWriter, &mut StdInSource);
+        let result = interpret(&node, &mut StdOutWriter, &mut StdInSource, opts.slow_down);
 
         if let Err(err) = result {
             eprintln!("\nEncountered error during execution: {}", err);
@@ -186,7 +186,7 @@ fn invoke_ld(obj_path: &Path, flush_path: &Path, out_path: &Path) -> Result<(), 
 /// hastily thrown together in an afternoon.
 /// No quality guaranteed!
 #[derive(Clap, Debug)]
-#[clap(version = "1.1", author = "Meryll")]
+#[clap(version = "1.2", author = "Meryll")]
 struct Opts {
     /// The path of the brainfuck file to compile/interpret.
     input_path: String,
@@ -212,4 +212,8 @@ struct Opts {
     /// Directory to store intermediate files in.
     #[clap(short('I'), long("int"), default_value = "./int/")]
     int_dir: String,
+
+    /// The amount of time to sleep after each instruction when interpreting, in milliseconds
+    #[clap(short('s'), long("slowdown"))]
+    slow_down: Option<u32>,
 }

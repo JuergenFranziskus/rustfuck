@@ -1,6 +1,7 @@
 use crate::front_end::parser::{InstructionNode, NodeType};
 use std::io::{Read, Write, ErrorKind};
 use std::fmt::{Display, Formatter};
+use std::time::Duration;
 
 
 pub trait ByteSource {
@@ -42,14 +43,20 @@ impl ByteWriter for StdOutWriter {
 
 
 
-pub fn interpret<R, W>(node: &InstructionNode, out: &mut W, src: &mut R) -> InterpretationResult
+pub fn interpret<R, W>(node: &InstructionNode, out: &mut W, src: &mut R, sleep: Option<u32>) -> InterpretationResult
     where R: ByteSource,
           W: ByteWriter, {
     let mut context = Context {
         memory: Vec::with_capacity(30000),
         p: 0,
     };
-    context.interpret_node(node, out, src)
+
+    let sleep = match sleep {
+        Some(time) => Some(Duration::from_millis(time as u64)),
+        None => None,
+    };
+
+    context.interpret_node(node, out, src, sleep)
 }
 
 
@@ -82,14 +89,14 @@ impl Context {
     }
 
 
-    fn interpret_node<W, R>(&mut self, node: &InstructionNode, out: &mut W, src: &mut R) -> InterpretationResult
+    fn interpret_node<W, R>(&mut self, node: &InstructionNode, out: &mut W, src: &mut R, sleep: Option<Duration>) -> InterpretationResult
         where R: ByteSource,
               W: ByteWriter,
     {
         match &node.node_type {
             NodeType::Program(nodes) => {
                 for child in nodes {
-                    self.interpret_node(child, out, src)?;
+                    self.interpret_node(child, out, src, sleep)?;
                 }
             }
             NodeType::Loop(nodes) => {
@@ -99,7 +106,7 @@ impl Context {
                         break;
                     } else {
                         for child in nodes {
-                            self.interpret_node(child, out, src)?;
+                            self.interpret_node(child, out, src, sleep)?;
                         }
                     }
                 }
@@ -145,6 +152,11 @@ impl Context {
 
                 self.memory[self.p] = (*val % 256) as u8;
             }
+        }
+
+
+        if let Some(time) = sleep {
+            std::thread::sleep(time);
         }
 
         Ok(())
