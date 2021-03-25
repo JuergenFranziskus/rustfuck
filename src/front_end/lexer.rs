@@ -97,7 +97,7 @@ fn get_shebang_length(src: &[char]) -> usize {
         return 0;
     }
 
-    for &c in src.iter().skip(2) {
+    for &c in src.iter() {
         if c == '\n' {
             break;
         }
