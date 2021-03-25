@@ -24,16 +24,19 @@ pub fn lex(src: &str) -> Vec<Token> {
     let mut char = 1;
 
 
+    let chars: Vec<_> = src.chars().collect();
     let mut tokens = Vec::new();
 
+    let to_skip = get_shebang_length(&chars);
 
-    for c in src.chars() {
+    for c in src.chars().skip(to_skip) {
         match c {
             '\n' => {
                 line += 1;
                 char = 1;
                 continue;
             }
+            '\r' => (),
 
             '>' => tokens.push(Token {
                 token_type: TokenType::Next,
@@ -86,6 +89,25 @@ pub fn lex(src: &str) -> Vec<Token> {
     tokens
 }
 
+
+fn get_shebang_length(src: &[char]) -> usize {
+    let mut len = 0;
+
+    if src.get(0) != Some(&'#') || src.get(1) != Some(&'!') {
+        return 0;
+    }
+
+    for &c in src.iter().skip(2) {
+        if c == '\n' {
+            break;
+        }
+        else {
+            len += 1;
+        }
+    }
+
+    len
+}
 
 
 pub fn print_tokens<W: Write>(tokens: &[Token], out: &mut W) -> std::io::Result<()> {
